@@ -19,6 +19,8 @@ namespace ConsoleApp1
         public float dop;
         public float mov = 0;
         public float proh = 0;
+        public float runaway;
+        public float stopaway;
         public void info()
         {
             Console.WriteLine("Введите номер авто: ");
@@ -35,12 +37,6 @@ namespace ConsoleApp1
             Console.WriteLine(bak);
             Console.WriteLine(ras);
         }
-        public void zapravka()
-        {
-            Console.WriteLine("");
-            top = float.Parse(Console.ReadLine());
-        }
-
         public void move()
         {
             Console.WriteLine("Авто едет на расстояние в случайном диапозоне от 1000 м до 15000");
@@ -49,23 +45,28 @@ namespace ConsoleApp1
             int nedos = 0;
             mov = 0;
             proh = 0;
-            float put = 0 ;
+            float put = 0;
+            int time = 0;
+            int speed = 80;
+            float t = 0;
             do
             {
                 nedos = 0;
                 osh = 0;
                 Random rnd = new Random();
                 km = rnd.Next(1000, 15000);
+                time = km / speed;
+                t = time * ras;
                 Console.WriteLine("Авто проехало:" + km);
                 put = km * ras / 100;
                 if (bak < put)
                 {
                     Console.WriteLine("Бензина в баке не хватит для того, чтобы доехать до нужного расстояния.");
                     dop = put - bak;
-                    proh = km- (bak * 100) / ras;
-                    mov = mov +  (bak*100)/ras;
+                    proh = km - (bak * 100) / ras;
+                    mov = mov + (bak * 100) / ras;
                     Console.WriteLine("Проехал всего: " + mov + " Не доехал от нужного расстояния: " + proh);
-                    Console.WriteLine("Для того, чтобы доехать до точки не хватает: " + dop);
+                    Console.WriteLine("Для того, чтобы доехать до точки не хватает бензина: " + dop);
                     osh++;
                     do
                     {
@@ -73,13 +74,13 @@ namespace ConsoleApp1
                         vibor = Convert.ToInt32(Console.ReadLine());
                         if (vibor == 1)
                         {
-                            
                             litr = float.Parse(Console.ReadLine());
-                            mov = mov + (litr/ras*100);
+                            mov = mov + (litr / ras * 100);
                             bak = bak + litr;
                             if (litr < dop)
                             {
                                 dop -= litr;
+                                proh = km - (bak * 100) / ras;
                                 nedos++;
                                 Console.WriteLine("Топлива не хватит, чтобы доехать до точки.");
                             }
@@ -89,17 +90,17 @@ namespace ConsoleApp1
                                 osh--;
                             }
                         }
-                    else if (vibor == 2)
-                    {
+                        else if (vibor == 2)
+                        {
                             nedos = 0;
-                        osh++;
-                        Console.WriteLine("Всего проехал: " + mov + " Не доехал до нужного расстояния: " + proh);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Вы ввели неправильное чисило или ввели букву.");
-                    }
-                    } while (nedos > 0) ;
+                            osh++;
+                            Console.WriteLine("Всего проехал: " + mov + " Не доехал до нужного расстояния: " + proh);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Вы ввели неправильное чисило или ввели букву.");
+                        }
+                    } while (nedos > 0);
                 }
                 if (bak >= put)
                 {
@@ -111,8 +112,98 @@ namespace ConsoleApp1
             }
             while (osh == 0);
         }
+        public void zapravka()
+        {
+            bak = bak + top;
+            dop -= top;
+            Console.WriteLine("Еще не хватает топлива: " + dop + " Всего в баке:" + bak);
 
-       
+        }
+        public void ostatok()
+        {
+            proh = (km - bak * 100 / ras);
+            Console.WriteLine("Проехал всего: " + mov + " Не доехал от нужного расстояния: " + proh);
+        }
+        public void move2()
+        {
+            int osh = 0;
+            float time2 = 0;
+            float time = 0;
+            float speed = 80;
+            float t = 0;
+            do
+            {
+                osh = 0;
+                mov = 0;
+                proh = 0;
+                Random rnd = new Random();
+                km = rnd.Next(1000, 15000);
+                time = km / speed;
+                time2 = (ras * 4) / 5;
+                t = time * time2;
+                Console.WriteLine("Авто проехало:" + km);
+                if (bak < t)
+                {
+                    osh++;
+                    mov += bak * 100 / ras;
+                    proh = (km - bak * 100 / ras);
+                    Console.WriteLine(t);
+                    dop = (float)Math.Round(t - bak, 2);
+                    Console.WriteLine("Проехал всего: " + mov + " Не доехал от нужного расстояния: " + proh);
+                    Console.WriteLine("Для того, чтобы доехать до точки не хватает бензина: " + dop);
+                        ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                        Console.WriteLine("Если вы хотите заправить бак, то напишиту цифру 1, если нет - 2");
+                        switch (keyInfo.Key)
+                        {
+                            case ConsoleKey.Y:
+                                top = float.Parse(Console.ReadLine());
+                                if (top < dop)
+                                {
+                                    zapravka();
+                                    move2();
+                                }
+                                break;
+                            case ConsoleKey.N:
+                                ostatok();
+                                break;
+                        }
+                       /* if (vibor == 1)
+                        {
+                            zapravka();
+                            if (top >= dop)
+                            {
+                                osh--;
+                            }
+                            if 
+                        }
+                        else if (vibor == 2)
+                        {
+                            osh++;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Вы ввели неправильное чисило или ввели букву.");
+                        }*/
+
+                }
+                else
+                {
+                    mov += mov + km;
+                }
+            } while (osh == 0);
+        }
+        public void maxmove()
+        {
+            runaway += mov;
+            Console.WriteLine(runaway);
+            stopaway += km - proh;
+            Console.WriteLine(stopaway);
+        }
+        public void accident()
+        {
+            int var = 0;
+            Random rnd = new Random();
+
+        }
     }
-
 }
