@@ -12,11 +12,9 @@ namespace ConsoleApp1
         private string nom;
         public float bak;
         public float ras;
-        public float speed;
         public float vrem;
         public float top;
         public int km;
-        private int vibor;
         private float dop;
         public float mov = 0;
         private float proh;
@@ -50,10 +48,11 @@ namespace ConsoleApp1
             float time = 0;
             scor = 80;
             float t = 0;
+            int vibor;
+            mov = 0;
             do
             {
                 osh = 0;
-                mov = 0;
                 proh = 0;
                 vrem = 0;
                 Random rnd = new Random();
