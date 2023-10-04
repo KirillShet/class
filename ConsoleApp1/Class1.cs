@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,19 +9,23 @@ namespace ConsoleApp1
 {
     public class Avto
     {
-        public string nom;
+        private string nom;
         public float bak;
         public float ras;
         public float speed;
-        public int vrem;
+        public float vrem;
         public float top;
         public int km;
-        public int vibor;
-        public float dop;
+        private int vibor;
+        private float dop;
         public float mov = 0;
-        public float proh = 0;
-        public float runaway;
-        public float stopaway;
+        private float proh;
+        private float runaway;
+        private float stopaway;
+        public float time;
+        private float ac;
+        private float ca;
+        public float scor;
         public void info()
         {
             Console.WriteLine("Введите номер авто: ");
@@ -37,7 +42,7 @@ namespace ConsoleApp1
             Console.WriteLine(bak);
             Console.WriteLine(ras);
         }
-        public void move()
+/*        public void move()
         {
             Console.WriteLine("Авто едет на расстояние в случайном диапозоне от 1000 м до 15000");
             int osh = 0;
@@ -111,43 +116,34 @@ namespace ConsoleApp1
                 }
             }
             while (osh == 0);
-        }
-        public void zapravka()
-        {
-            bak = bak + top;
-            dop -= top;
-            Console.WriteLine("Еще не хватает топлива: " + dop + " Всего в баке:" + bak);
+        }*/
 
-        }
-        public void ostatok()
-        {
-            proh = (km - bak * 100 / ras);
-            Console.WriteLine("Проехал всего: " + mov + " Не доехал от нужного расстояния: " + proh);
-        }
         public void move2()
         {
             int osh = 0;
             int nedos = 0;
             float time2 = 0;
             float time = 0;
-            float speed = 80;
+            scor = 80;
             float t = 0;
             do
             {
                 osh = 0;
                 mov = 0;
                 proh = 0;
+                vrem = 0;
                 Random rnd = new Random();
                 km = rnd.Next(1000, 15000);
-                time = km / speed;
+                time = km / scor;
                 time2 = (ras * 4) / 5;
-                t = time * time2;
+                t = (float)Math.Round((time + float.Parse("0,002778")) * time2, 2);
                 Console.WriteLine("Авто проехало:" + km);
                 if (bak < t)
                 {
                     osh++;
-                    mov += (float)Math.Round((bak / time2) * speed, 2);
-                    proh = (float)Math.Round((km - ((bak / time2) * speed)), 2);
+                    mov += (float)Math.Round((bak / time2) * scor, 2);
+                    proh = (float)Math.Round((km - ((bak / time2) * scor)), 2);
+                    vrem = (float)Math.Round((bak / time2) * scor, 2);
                     Console.WriteLine(t);
                     dop = (float)Math.Round(t - bak, 2);
                     Console.WriteLine("Проехал всего: " + mov + " Не доехал от нужного расстояния: " + proh);
@@ -169,10 +165,11 @@ namespace ConsoleApp1
                             {
                                 nedos++;
                                 dop = (float)Math.Round(dop - top, 2);
-                                mov += (float)Math.Round((top / time2) * speed, 2);
-                                proh = (float)Math.Round((km - ((bak / time2) * speed + (top/ time2) * speed)), 2);
+                                mov += (float)Math.Round((top / time2) * scor, 2);
+                                proh = (float)Math.Round((km - ((bak / time2) * scor + (top/ time2) * scor)), 2);
                                 Console.WriteLine("Осталось проехать до конца пути: " + proh + " Нехватает топлива: " + dop);
                                 bak = (float)Math.Round(bak + top, 2);
+                                vrem+= (float)Math.Round((top / time2) * scor, 2);
                             }
                         }
                         else if (vibor == 2)
@@ -191,15 +188,31 @@ namespace ConsoleApp1
                 {
                     mov += mov + km;
                     bak -= t;
+                    Console.WriteLine("Осталось бензина: " + bak);
                 }
             } while (osh == 0);
         }
+        public void boost()
+        {
+            time = float.Parse("0,0025");
+            ac = scor / time;
+            ac = (float)Math.Round(ac * (float)Math.Pow(time, 2) * 1000, 0);
+            Console.WriteLine("Расстояние, потраченное на ускорение: " + ac); 
+        }
+
+        public void braking()
+        {
+            time = float.Parse("0,00825");
+            ca = scor / time;
+            ca = (float)Math.Round(ca * (float)Math.Pow(time, 2)* 1000, 0);
+            Console.WriteLine("Расстояние, потраченное на торможение: " +ca);
+        }
         public void maxmove()
         {
-            runaway += mov;
-            Console.WriteLine(runaway);
-            stopaway += km - proh;
-            Console.WriteLine(stopaway);
+            runaway = mov;
+            Console.WriteLine("Проехал всего: " + runaway);
+            stopaway = vrem; 
+            Console.WriteLine("Расстояние от начальной до конечной точки: " + stopaway);
         }
         public void accident()
         {
