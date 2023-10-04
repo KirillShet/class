@@ -127,6 +127,7 @@ namespace ConsoleApp1
         public void move2()
         {
             int osh = 0;
+            int nedos = 0;
             float time2 = 0;
             float time = 0;
             float speed = 80;
@@ -145,50 +146,51 @@ namespace ConsoleApp1
                 if (bak < t)
                 {
                     osh++;
-                    mov += bak * 100 / ras;
-                    proh = (km - bak * 100 / ras);
+                    mov += (float)Math.Round((bak / time2) * speed, 2);
+                    proh = (float)Math.Round((km - ((bak / time2) * speed)), 2);
                     Console.WriteLine(t);
                     dop = (float)Math.Round(t - bak, 2);
                     Console.WriteLine("Проехал всего: " + mov + " Не доехал от нужного расстояния: " + proh);
                     Console.WriteLine("Для того, чтобы доехать до точки не хватает бензина: " + dop);
-                        ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                    do
+                    {
                         Console.WriteLine("Если вы хотите заправить бак, то напишиту цифру 1, если нет - 2");
-                        switch (keyInfo.Key)
+                        vibor = Convert.ToInt32(Console.ReadLine());
+                        if (vibor == 1)
                         {
-                            case ConsoleKey.Y:
-                                top = float.Parse(Console.ReadLine());
-                                if (top < dop)
-                                {
-                                    zapravka();
-                                    move2();
-                                }
-                                break;
-                            case ConsoleKey.N:
-                                ostatok();
-                                break;
-                        }
-                       /* if (vibor == 1)
-                        {
-                            zapravka();
+                            top = float.Parse(Console.ReadLine());
                             if (top >= dop)
                             {
+                                nedos = 0;
+                                bak = (float)Math.Round(bak + top, 2);
                                 osh--;
                             }
-                            if 
+                            else if (top < dop)
+                            {
+                                nedos++;
+                                dop = (float)Math.Round(dop - top, 2);
+                                mov += (float)Math.Round((top / time2) * speed, 2);
+                                proh = (float)Math.Round((km - ((bak / time2) * speed + (top/ time2) * speed)), 2);
+                                Console.WriteLine("Осталось проехать до конца пути: " + proh + " Нехватает топлива: " + dop);
+                                bak = (float)Math.Round(bak + top, 2);
+                            }
                         }
                         else if (vibor == 2)
                         {
+                            Console.WriteLine("Вы проехали:" + mov + " До конечной точки осталось: " + proh);
+                            nedos = 0;
                             osh++;
                         }
                         else
                         {
                             Console.WriteLine("Вы ввели неправильное чисило или ввели букву.");
-                        }*/
-
+                        }
+                    } while (nedos > 0);
                 }
                 else
                 {
                     mov += mov + km;
+                    bak -= t;
                 }
             } while (osh == 0);
         }

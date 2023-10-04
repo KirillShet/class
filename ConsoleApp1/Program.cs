@@ -15,6 +15,5 @@ class programm
         }
         cars[0].output();
         cars[0].move2();
-        cars[0].maxmove();
     }
 }
